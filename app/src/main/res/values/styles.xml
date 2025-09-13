@@ -32,6 +32,5 @@
         <item name="android:statusBarColor">@color/iphone_black</item>
         <item name="android:navigationBarColor">@color/iphone_black</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
     </style>
 </resources>
