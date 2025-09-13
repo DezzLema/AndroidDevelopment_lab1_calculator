@@ -1,0 +1,37 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base iPhone Button Style -->
+    <style name="iPhoneButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">80dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/iphone_button_background</item>
+    </style>
+
+    <!-- Dark Gray Buttons (Numbers) -->
+    <style name="iPhoneButton.Dark" parent="iPhoneButton">
+        <item name="android:backgroundTint">@color/iphone_dark_gray</item>
+        <item name="android:textColor">@color/iphone_white</item>
+    </style>
+
+    <!-- Light Gray Buttons (Operations) -->
+    <style name="iPhoneButton.Gray" parent="iPhoneButton">
+        <item name="android:backgroundTint">@color/iphone_light_gray</item>
+        <item name="android:textColor">@color/iphone_dark_text</item>
+    </style>
+
+    <!-- Orange Buttons (Main Operations) -->
+    <style name="iPhoneButton.Orange" parent="iPhoneButton">
+        <item name="android:backgroundTint">@color/iphone_orange</item>
+        <item name="android:textColor">@color/iphone_white</item>
+    </style>
+
+    <!-- Theme -->
+    <style name="Theme.Lab1" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/iphone_black</item>
+        <item name="android:navigationBarColor">@color/iphone_black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>

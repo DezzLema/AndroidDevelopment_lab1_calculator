@@ -1,6 +1,5 @@
 package com.example.lab1
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -41,8 +40,16 @@ class ResultActivity : AppCompatActivity() {
             else -> "?"
         }
 
-        tvResult.text = getString(R.string.result_format, result)
-        tvCalculation.text = "$num1 $operationSymbol $num2 = $result"
+        tvResult.text = removeTrailingZeros(result.toString())
+        tvCalculation.text = "${removeTrailingZeros(num1.toString())} $operationSymbol ${removeTrailingZeros(num2.toString())}"
+    }
+
+    private fun removeTrailingZeros(number: String): String {
+        return if (number.contains(".")) {
+            number.replace("\\.0+$", "").replace("(\\..*?)0+$", "$1")
+        } else {
+            number
+        }
     }
 
     private fun setupListeners() {

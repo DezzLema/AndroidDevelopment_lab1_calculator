@@ -1,99 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/iphone_black"
+    android:orientation="vertical"
     android:padding="16dp"
     tools:context=".MainActivity">
 
+    <!-- Display Area -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom|end"
         android:orientation="vertical"
-        android:gravity="center">
+        android:padding="20dp">
 
-        <!-- Заменяем CardView на LinearLayout с фоном -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvDisplay"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:background="@drawable/card_background"
-            android:elevation="4dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Калькулятор"
-                android:textSize="24sp"
-                android:textColor="@color/primary"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_marginBottom="24dp"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusTopStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusBottomEnd="8dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNumber1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_number1"
-                    android:inputType="numberDecimal|numberSigned"
-                    android:importantForAutofill="no" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusTopStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusBottomEnd="8dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNumber2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_number2"
-                    android:inputType="numberDecimal|numberSigned"
-                    android:importantForAutofill="no" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Spinner
-                android:id="@+id/spinnerOperation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/spinner_background"/>
-
-            <!-- Убираем style атрибут -->
-            <Button
-                android:id="@+id/btnCalculate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_calculate"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/white"
-                android:enabled="false"/>
-
-        </LinearLayout>
+            android:text="0"
+            android:textColor="@color/iphone_white"
+            android:textSize="64sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
-</ScrollView>
+
+    <!-- Calculator Buttons - Using TableLayout instead of GridLayout -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:stretchColumns="*">
+
+        <!-- Row 1 -->
+        <TableRow
+            android:layout_weight="1"
+            android:weightSum="4">
+
+            <Button
+                android:id="@+id/btnClear"
+                style="@style/iPhoneButton.Gray"
+                android:text="C" />
+
+            <Button
+                android:id="@+id/btnSign"
+                style="@style/iPhoneButton.Gray"
+                android:text="±" />
+
+            <Button
+                android:id="@+id/btnPercent"
+                style="@style/iPhoneButton.Gray"
+                android:text="%" />
+
+            <Button
+                android:id="@+id/btnDivide"
+                style="@style/iPhoneButton.Orange"
+                android:text="÷" />
+        </TableRow>
+
+        <!-- Row 2 -->
+        <TableRow
+            android:layout_weight="1"
+            android:weightSum="4">
+
+            <Button
+                android:id="@+id/btn7"
+                style="@style/iPhoneButton.Dark"
+                android:text="7" />
+
+            <Button
+                android:id="@+id/btn8"
+                style="@style/iPhoneButton.Dark"
+                android:text="8" />
+
+            <Button
+                android:id="@+id/btn9"
+                style="@style/iPhoneButton.Dark"
+                android:text="9" />
+
+            <Button
+                android:id="@+id/btnMultiply"
+                style="@style/iPhoneButton.Orange"
+                android:text="×" />
+        </TableRow>
+
+        <!-- Row 3 -->
+        <TableRow
+            android:layout_weight="1"
+            android:weightSum="4">
+
+            <Button
+                android:id="@+id/btn4"
+                style="@style/iPhoneButton.Dark"
+                android:text="4" />
+
+            <Button
+                android:id="@+id/btn5"
+                style="@style/iPhoneButton.Dark"
+                android:text="5" />
+
+            <Button
+                android:id="@+id/btn6"
+                style="@style/iPhoneButton.Dark"
+                android:text="6" />
+
+            <Button
+                android:id="@+id/btnSubtract"
+                style="@style/iPhoneButton.Orange"
+                android:text="-" />
+        </TableRow>
+
+        <!-- Row 4 -->
+        <TableRow
+            android:layout_weight="1"
+            android:weightSum="4">
+
+            <Button
+                android:id="@+id/btn1"
+                style="@style/iPhoneButton.Dark"
+                android:text="1" />
+
+            <Button
+                android:id="@+id/btn2"
+                style="@style/iPhoneButton.Dark"
+                android:text="2" />
+
+            <Button
+                android:id="@+id/btn3"
+                style="@style/iPhoneButton.Dark"
+                android:text="3" />
+
+            <Button
+                android:id="@+id/btnAdd"
+                style="@style/iPhoneButton.Orange"
+                android:text="+" />
+        </TableRow>
+
+        <!-- Row 5 -->
+        <TableRow
+            android:layout_weight="1"
+            android:weightSum="4">
+
+            <Button
+                android:id="@+id/btn0"
+                style="@style/iPhoneButton.Dark"
+                android:layout_span="2"
+                android:text="0" />
+
+            <Button
+                android:id="@+id/btnDot"
+                style="@style/iPhoneButton.Dark"
+                android:text="." />
+
+            <Button
+                android:id="@+id/btnEquals"
+                style="@style/iPhoneButton.Orange"
+                android:text="=" />
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

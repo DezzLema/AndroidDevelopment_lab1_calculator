@@ -3,106 +3,197 @@ package com.example.lab1
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var etNumber1: EditText
-    private lateinit var etNumber2: EditText
-    private lateinit var spinnerOperation: Spinner
-    private lateinit var btnCalculate: Button
+    private lateinit var tvDisplay: TextView
+    private lateinit var btnClear: Button
+    private var currentInput = "0"
+    private var currentOperation = ""
+    private var firstOperand = 0.0
+    private var shouldResetInput = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initViews()
-        setupSpinner()
-        setupListeners()
+        setupNumberButtons()
+        setupOperationButtons()
+        setupClearButton()
+        setupEqualsButton()
+        setupAdditionalButtons()
     }
 
     private fun initViews() {
-        etNumber1 = findViewById(R.id.etNumber1)
-        etNumber2 = findViewById(R.id.etNumber2)
-        spinnerOperation = findViewById(R.id.spinnerOperation)
-        btnCalculate = findViewById(R.id.btnCalculate)
+        tvDisplay = findViewById(R.id.tvDisplay)
+        btnClear = findViewById(R.id.btnClear)
     }
 
-    private fun setupSpinner() {
-        val operations = arrayOf(
-            getString(R.string.operation_add),
-            getString(R.string.operation_subtract),
-            getString(R.string.operation_multiply),
-            getString(R.string.operation_divide)
+    private fun setupNumberButtons() {
+        // Находим все кнопки с цифрами по их ID
+        val numberButtons = listOf(
+            findViewById<Button>(R.id.btn0),
+            findViewById<Button>(R.id.btn1),
+            findViewById<Button>(R.id.btn2),
+            findViewById<Button>(R.id.btn3),
+            findViewById<Button>(R.id.btn4),
+            findViewById<Button>(R.id.btn5),
+            findViewById<Button>(R.id.btn6),
+            findViewById<Button>(R.id.btn7),
+            findViewById<Button>(R.id.btn8),
+            findViewById<Button>(R.id.btn9),
+            findViewById<Button>(R.id.btnDot)
         )
 
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            operations
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerOperation.adapter = adapter
-    }
-
-    private fun setupListeners() {
-        // Валидация ввода
-        etNumber1.addTextChangedListener { validateInputs() }
-        etNumber2.addTextChangedListener { validateInputs() }
-
-        btnCalculate.setOnClickListener {
-            if (validateInputs()) {
-                calculateAndNavigate()
+        // Устанавливаем обработчики для всех кнопок
+        numberButtons.forEach { button ->
+            button?.setOnClickListener {
+                val number = when (button.id) {
+                    R.id.btnDot -> "."
+                    else -> button.text.toString()
+                }
+                onNumberClicked(number)
             }
         }
     }
 
-    private fun validateInputs(): Boolean {
-        val num1 = etNumber1.text.toString()
-        val num2 = etNumber2.text.toString()
+    private fun setupOperationButtons() {
+        val operationButtons = mapOf(
+            R.id.btnAdd to "+",
+            R.id.btnSubtract to "-",
+            R.id.btnMultiply to "×",
+            R.id.btnDivide to "÷"
+        )
 
-        val isValid = num1.isNotEmpty() && num2.isNotEmpty() &&
-                num1.toDoubleOrNull() != null && num2.toDoubleOrNull() != null
-
-        btnCalculate.isEnabled = isValid
-        return isValid
+        operationButtons.forEach { (buttonId, operation) ->
+            findViewById<Button>(buttonId)?.setOnClickListener {
+                onOperationClicked(operation)
+            }
+        }
     }
 
-    private fun calculateAndNavigate() {
-        try {
-            val num1 = etNumber1.text.toString().toDouble()
-            val num2 = etNumber2.text.toString().toDouble()
-            val operation = spinnerOperation.selectedItemPosition
-
-            // Проверка деления на ноль
-            if (operation == 3 && num2 == 0.0) {
-                Toast.makeText(this, R.string.error_division_by_zero, Toast.LENGTH_SHORT).show()
-                return
+    private fun setupAdditionalButtons() {
+        // Percent button
+        findViewById<Button>(R.id.btnPercent)?.setOnClickListener {
+            if (currentInput != "0") {
+                val number = currentInput.toDouble() / 100
+                currentInput = removeTrailingZeros(number.toString())
+                updateDisplay()
             }
-
-            val result = when (operation) {
-                0 -> num1 + num2
-                1 -> num1 - num2
-                2 -> num1 * num2
-                3 -> num1 / num2
-                else -> 0.0
-            }
-
-            val intent = Intent(this, ResultActivity::class.java).apply {
-                putExtra("result", result)
-                putExtra("num1", num1)
-                putExtra("num2", num2)
-                putExtra("operation", operation)
-            }
-            startActivity(intent)
-
-        } catch (e: NumberFormatException) {
-            Toast.makeText(this, R.string.error_invalid_input, Toast.LENGTH_SHORT).show()
         }
+
+        // Sign change button
+        findViewById<Button>(R.id.btnSign)?.setOnClickListener {
+            if (currentInput != "0") {
+                val number = currentInput.toDouble() * -1
+                currentInput = removeTrailingZeros(number.toString())
+                updateDisplay()
+            }
+        }
+    }
+
+    private fun setupClearButton() {
+        btnClear.setOnClickListener {
+            currentInput = "0"
+            currentOperation = ""
+            firstOperand = 0.0
+            shouldResetInput = false
+            updateDisplay()
+            btnClear.text = "C"
+        }
+    }
+
+    private fun setupEqualsButton() {
+        findViewById<Button>(R.id.btnEquals)?.setOnClickListener {
+            calculateResult()
+        }
+    }
+
+    private fun onNumberClicked(number: String) {
+        if (shouldResetInput) {
+            currentInput = "0"
+            shouldResetInput = false
+        }
+
+        if (number == ".") {
+            if (!currentInput.contains(".")) {
+                currentInput += "."
+            }
+        } else {
+            if (currentInput == "0") {
+                currentInput = number
+            } else {
+                currentInput += number
+            }
+        }
+
+        updateDisplay()
+        btnClear.text = "C"
+    }
+
+    private fun onOperationClicked(operation: String) {
+        if (currentOperation.isNotEmpty()) {
+            calculateResult()
+        }
+
+        firstOperand = currentInput.toDouble()
+        currentOperation = operation
+        shouldResetInput = true
+    }
+
+    private fun calculateResult() {
+        if (currentOperation.isEmpty()) return
+
+        val secondOperand = currentInput.toDouble()
+        val result = when (currentOperation) {
+            "+" -> firstOperand + secondOperand
+            "-" -> firstOperand - secondOperand
+            "×" -> firstOperand * secondOperand
+            "÷" -> {
+                if (secondOperand == 0.0) {
+                    Toast.makeText(this, "Деление на ноль невозможно", Toast.LENGTH_SHORT).show()
+                    return
+                }
+                firstOperand / secondOperand
+            }
+            else -> 0.0
+        }
+
+        // Navigate to result activity
+        val intent = Intent(this, ResultActivity::class.java).apply {
+            putExtra("result", result)
+            putExtra("num1", firstOperand)
+            putExtra("num2", secondOperand)
+            putExtra("operation", when (currentOperation) {
+                "+" -> 0
+                "-" -> 1
+                "×" -> 2
+                "÷" -> 3
+                else -> 0
+            })
+        }
+        startActivity(intent)
+
+        // Reset for next calculation
+        currentInput = removeTrailingZeros(result.toString())
+        currentOperation = ""
+        shouldResetInput = true
+        updateDisplay()
+    }
+
+    private fun removeTrailingZeros(number: String): String {
+        return if (number.contains(".")) {
+            number.replace("\\.0+$", "").replace("(\\..*?)0+$", "$1")
+        } else {
+            number
+        }
+    }
+
+    private fun updateDisplay() {
+        tvDisplay.text = currentInput
     }
 }
